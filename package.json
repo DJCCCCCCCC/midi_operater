@@ -13,8 +13,15 @@
   "files": [
     "index.js",
     "midi.js",
-    "cordis.patch.yml"
+    "cordis.patch.yml",
+    "install.mjs",
+    "plugin.host.js",
+    "plugin.client.js",
+    "worker.mjs"
   ],
+  "scripts": {
+    "install:plugin": "node install.mjs"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
