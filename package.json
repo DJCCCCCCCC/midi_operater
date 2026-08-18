@@ -1,37 +1,54 @@
 {
   "name": "dsh-midi-plugin",
   "version": "0.2.0",
-  "description": "Persistent DeepSeek Harness bundle: MIDI recognize/edit tools (midi_summary, midi_read, midi_write, midi_transpose, midi_quantize, midi_tempo, midi_chords) over @tonejs/midi.",
+  "description": "Persistent DeepSeek Harness bundle: MIDI recognize/edit tools (midi_summary, midi_read, midi_write, midi_transpose, midi_quantize, midi_tempo, midi_chords) plus a piano-roll toolview, over @tonejs/midi.",
   "type": "module",
   "main": "index.js",
   "exports": {
     ".": "./index.js",
+    "./client": "./client.js",
     "./midi": "./midi.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
     "./package.json": "./package.json"
   },
   "files": [
     "index.js",
     "midi.js",
-    "cordis.patch.yml",
-    "worker.mjs",
-    "plugin.host.js",
-    "plugin.client.js"
+    "client.js",
+    "cordis.patch.yml"
   ],
+  "scripts": {
+    "build:client": "node scripts/build-client.mjs",
+    "check:client": "node scripts/build-client.mjs --check"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "slots"
+      ]
     }
   },
   "dependencies": {
     "@tonejs/midi": "^2.0.28"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-tools": "^0.1.0-rc.0",
-    "@deepseek-ai/cordis": "^4.0.0"
+    "@deepseek-ai/cordis": "^4.0.0",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.0"
   },
   "peerDependenciesMeta": {
-    "@deepseek-ai/dsh-tools": { "optional": true },
-    "@deepseek-ai/cordis": { "optional": true }
+    "@deepseek-ai/dsh-tools": {
+      "optional": true
+    },
+    "@deepseek-ai/cordis": {
+      "optional": true
+    }
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
 }
