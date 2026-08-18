@@ -1,0 +1,11 @@
+{
+  "name": "dsh-midi-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone MIDI read/edit capability for the DeepSeek Harness: a @tonejs/midi worker plus the dynamic Cordis plugin that exposes it as model tools.",
+  "license": "MIT",
+  "dependencies": {
+    "@tonejs/midi": "^2.0.28"
+  }
+}

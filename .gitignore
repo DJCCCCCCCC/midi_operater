@@ -1,0 +1,12 @@
+# dependencies
+node_modules/
+.npm-cache/
+
+# generated test artifacts
+*.mid
+*.midi
+
+# logs / OS
+*.log
+.DS_Store
+Thumbs.db
