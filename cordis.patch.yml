@@ -1,0 +1,10 @@
+# dsh-midi-plugin bundle patch: mounts the persistent MIDI tools host row.
+# Applied when a profile lists this package in dsh.profile.bundles (via
+# `dsh plugin --profile <name> add <this-package>`).
+#
+# The row references the package by name so the Loader resolves index.js from
+# the profile's node_modules. index.js registers the seven MIDI tools on the
+# global `tools` layer, which every session's agent inherits.
+- insert:
+    - id: midi-tools
+      name: dsh-midi-plugin
