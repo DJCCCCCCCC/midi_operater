@@ -16,14 +16,16 @@
 
 `index.js` 是标准 Cordis 函数插件（`export name / inject / apply`），直接用 `import` 加载 `@tonejs/midi`——普通 npm 包可以 `import`，所以持久化工具**不再需要子进程桥**。
 
-### 为什么钢琴卷帘仍是动态插件
+### 为什么钢琴卷帘 / 上传按钮不能随 bundle 持久化
 
-harness 的第三方分发规范（`dsh plugin add`）只支持 **host 侧插件**：bundle 的 `cordis.patch.yml` 只能插入 host 行，`ctx.tools.register` 等全局服务正是为此设计。而浏览器 UI 需要两条只有内置包才有的通道：
+harness 的第三方分发规范（`dsh plugin add`）只支持 **host 侧插件**：bundle 的 `cordis.patch.yml` 只能插入 host 行，`ctx.tools.register` 等全局服务正是为此设计。两个 UI 能力各有一道独立包跨不过的门槛：
 
-1. **client→host RPC**：客户端调用 host 的 `RpcMethodMap`（在 `dsh-host-apiproxy` 里编译死，`session.*`、`workspace.*` 等固定方法）没有第三方扩展点，动态插件的 `harness.handle` / `host.call` 是唯一能加私有 RPC 的方式。
-2. **`dsh.client` 清单 + 构建**：浏览器插件要由 `client-modules` 扫描进 `window.__DSH_BOOT__`，其 `lib/client.js` 是仓库内 tsdown 构建产物，独立包无法产出。
+1. **上传按钮 → client→host 传文件 RPC 不存在**。`dsh-host-apiproxy` 的 `RpcMethodMap` 编译死（`session.*`、`workspace.*`、`host.*`、`settings.*` 等固定方法），没有任何「上传任意二进制」通道；内置附件上传（`ctx.attachments`）只接受图片（PNG/JPEG/WebP/GIF）并强制解码校验，装不了 MIDI。所以上传按钮只能靠动态插件的私有 RPC（`harness.handle` / `host.call`）。
+2. **钢琴卷帘 → `dsh.client` 浏览器清单不开放**。浏览器插件要由 `client-modules` 扫描进 `window.__DSH_BOOT__`，其 `lib/client.js` 是仓库内 tsdown 的 `clientBundle` 预设产物，依赖 `@deepseek-ai/dsh-client-*` 内部包，且构建时的纯度门禁止任何跨插件值导入——整套链只存在于 harness 源码树内，独立包无法产出。
 
-所以钢琴卷帘（及其预览/上传/下载三个 RPC handler）保留为**会话级动态伴侣**：bundle 提供持久能力，动态伴侣提供可视化。两者可同时启用（bundle 注册工具，伴侣只做 RPC + UI，不重复注册工具）。
+所以这两个 UI 保留为**会话级动态伴侣**：bundle 提供持久能力（7 个工具），动态伴侣提供可视化。两者可同时启用（bundle 注册工具，伴侣只做 RPC + UI，不重复注册工具）。
+
+> 想要 UI 真正持久化，唯一正规路径是把它们做成 harness **内置包**（fork 源码树，加 `dsh.client` 浏览器包 + 在 `RpcMethodMap` 注册私有方法），属于维护自有 harness 分支，不在 `dsh plugin add` 的能力范围内。
 
 ## 安装
 
@@ -48,7 +50,7 @@ pnpm pack && dsh plugin --profile web add ./dsh-midi-plugin-0.2.0.tgz
 dsh --profile web --dump-config   # 应看到 "# == dsh-midi-plugin" 层与 midi-tools 行
 ```
 
-### 动态伴侣（可选，钢琴卷帘）
+### 动态伴侣（可选，钢琴卷帘 + 上传）
 
 伴侣是动态 Cordis 插件，代码在 `plugin.host.js`（Host 半边）和 `plugin.client.js`（Client 半边）：
 
@@ -57,6 +59,15 @@ dsh --profile web --dump-config   # 应看到 "# == dsh-midi-plugin" 层与 midi
 3. `cordis_run`（首次激活）。含 Client 代码会触发一次授权，在 UI 点「允许」。
 
 > `plugin.host.js` 的 `WORKER` 常量硬编码了 worker 路径（`D:/桌面/Code/DSH/midi-plugin/worker.mjs`），换机器要同步改。
+
+#### 重启后重载（一句话配方）
+
+动态伴侣是会话级的，每次重启 web 服务后消失。因为它的客户端代码只注入当前浏览器页面，重载后请**刷新页面**（F5）。重载只做两步：
+
+1. 对 AI 说：**「重新加载 midi 伴侣」**，AI 会重新 `cordis_define` + `cordis_run`。
+2. 在页面授权提示点**「允许」**（浏览器 UI 首次激活都要授权）。
+
+工具（7 个 MIDI 工具）不受影响——它们由持久化 bundle 提供，重启后一直在。
 
 ## 架构
 
