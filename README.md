@@ -1,6 +1,6 @@
 # dsh-midi-plugin
 
-为 DeepSeek Harness 添加 MIDI 文件的识别、编辑与可视化能力，基于 `@tonejs/midi`（纯 JavaScript，无 C 扩展）。
+为 DeepSeek Harness 添加 MIDI 文件的识别、编辑与可视化能力，基于 `@tonejs/midi`
 
 ## 功能
 
