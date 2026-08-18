@@ -284,6 +284,24 @@ return {
         })
       }
       function onMouseUp() { setDrag(null) }
+      function doDownload() {
+        host.call('midi-download', { path: path, trackIndex: trackFilter }).then(function (res) {
+          const bin = atob(res.base64)
+          const bytes = new Uint8Array(bin.length)
+          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
+          const blob = new Blob([bytes], { type: 'audio/midi' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = res.name
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          URL.revokeObjectURL(url)
+        }).catch(function (err) {
+          console.error('下载失败: ' + String((err && err.message) || err))
+        })
+      }
 
       return React.createElement('div', null,
         React.createElement('div', { className: 'dsh-roll-toolbar' },
@@ -291,6 +309,7 @@ return {
           React.createElement('button', { className: 'dsh-roll-btn', onClick: function () { zoomBy(1 / 1.3) } }, '−'),
           React.createElement('button', { className: 'dsh-roll-btn', onClick: fit }, '适应'),
           React.createElement('button', { className: 'dsh-roll-btn', onClick: function () { setView({ zoomX: 0.5, zoomY: 0.3, panX: 0, panY: 0 }) } }, '重置'),
+          React.createElement('button', { className: 'dsh-roll-btn', onClick: doDownload }, '下载'),
           React.createElement('select', {
             className: 'dsh-roll-select',
             value: trackFilter === null ? '' : trackFilter,

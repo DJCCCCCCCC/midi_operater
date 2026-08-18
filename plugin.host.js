@@ -39,5 +39,12 @@ return {
     harness.handle('midi-preview', async function (args) {
       return runWorker({ op: 'read', path: args.path, mode: 'full' }, undefined)
     })
+
+    // Package-private RPC for the Client download button: return the file bytes
+    // as base64 so the browser can build a Blob and trigger a download. Pass
+    // trackIndex to export just that one track.
+    harness.handle('midi-download', async function (args) {
+      return runWorker({ op: 'download', path: args.path, trackIndex: args.trackIndex }, undefined)
+    })
   },
 }
