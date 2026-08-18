@@ -1,6 +1,6 @@
 {
   "name": "dsh-midi-plugin",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "Persistent DeepSeek Harness bundle: MIDI recognize/edit tools (midi_summary, midi_read, midi_write, midi_transpose, midi_quantize, midi_tempo, midi_chords) over @tonejs/midi.",
   "type": "module",
   "main": "index.js",
