@@ -1,12 +1,11 @@
 {
   "name": "dsh-midi-plugin",
   "version": "0.2.0",
-  "description": "Persistent DeepSeek Harness bundle: MIDI recognize/edit tools (midi_summary, midi_read, midi_write, midi_transpose, midi_quantize, midi_tempo, midi_chords) plus a piano-roll toolview, over @tonejs/midi.",
+  "description": "Persistent DeepSeek Harness bundle: MIDI recognize/edit tools (midi_summary, midi_read, midi_write, midi_transpose, midi_quantize, midi_tempo, midi_chords) over @tonejs/midi.",
   "type": "module",
   "main": "index.js",
   "exports": {
     ".": "./index.js",
-    "./client": "./client.js",
     "./midi": "./midi.js",
     "./cordis.patch.yml": "./cordis.patch.yml",
     "./package.json": "./package.json"
@@ -14,22 +13,11 @@
   "files": [
     "index.js",
     "midi.js",
-    "client.js",
     "cordis.patch.yml"
   ],
-  "scripts": {
-    "build:client": "node scripts/build-client.mjs",
-    "check:client": "node scripts/build-client.mjs --check"
-  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
-    },
-    "client": {
-      "platform": "web",
-      "inject": [
-        "slots"
-      ]
     }
   },
   "dependencies": {
@@ -47,8 +35,5 @@
       "optional": true
     }
   },
-  "license": "MIT",
-  "devDependencies": {
-    "esbuild": "^0.28.2"
-  }
+  "license": "MIT"
 }

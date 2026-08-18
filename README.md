@@ -1,12 +1,11 @@
 # dsh-midi-plugin
 
-为 DeepSeek Harness 添加 MIDI 文件的识别、编辑与可视化能力，基于 `@tonejs/midi`（纯 JavaScript，无 C 扩展）。
+为 DeepSeek Harness 添加 MIDI 文件的识别与编辑能力，基于 `@tonejs/midi`（纯 JavaScript，无 C 扩展）。
 
 ## 功能
 
 - **识别**：`midi_summary`（概览）、`midi_read`（完整音符）、`midi_chords`（和弦进行）
 - **编辑**：`midi_write`（写回）、`midi_transpose`（移调，可只移单条声部）、`midi_quantize`（量化）、`midi_tempo`（改速度）
-- **可视化**：`midi_read` 的调用卡片带 FL Studio 风格钢琴卷帘，支持缩放、拖拽平移、轨道筛选
 
 ## 安装
 
@@ -18,7 +17,7 @@ dsh plugin --profile web add ./midi-plugin
 dsh plugin --profile web add github:DJCCCCCCCC/midi_operater
 ```
 
-安装后重启 web 服务即生效，工具和钢琴卷帘会随 profile 持久化，不会因重启丢失。
+安装后重启 web 服务即生效，工具会随 profile 持久化，不会因重启丢失。
 
 验证是否装好：
 
